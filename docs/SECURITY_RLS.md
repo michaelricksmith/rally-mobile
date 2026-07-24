@@ -96,3 +96,13 @@ Privileged credentials therefore live in **Supabase Edge Function Secrets only**
 - written to disk by a server-side process outside Edge Function execution
 
 The mobile client receives only `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` (or Supabase's publishable key, when GA). The mobile client **never** sees the service role, provider OAuth client secrets, or provider access/refresh tokens after the initial OAuth handoff to the Edge Function.
+
+## CI / build-system secrets
+
+If we later script EAS builds from CI:
+
+- **Expo access tokens** live in the CI provider's encrypted secret store (e.g. GitHub Actions Encrypted Secrets), never in source, chat, screenshots, the mobile app, or EAS Secrets that EAS would expose to a build target.
+- **Scopes** are kept minimal. Rotate on contributor change.
+- **The CI workflow file** that consumes the secret is reviewed before merge to confirm the secret is read at job start and not echoed into logs.
+
+This rule applies symmetrically to any other build-system credential (Apple Developer tokens, Google Play service accounts, signing keys).
