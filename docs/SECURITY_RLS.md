@@ -78,3 +78,21 @@ The CI workflow `rls` job spins up `supabase start`, applies migrations, and run
 ## Reporting
 
 Found a security issue? Email `security@strive.app` (placeholder until a real address is provisioned). Do not file a public GitHub issue.
+
+## Privilege boundary (read carefully)
+
+RLS protects the database from authenticated users, full stop. It does **not** protect against a leaked **service-role** key. If `SUPABASE_SERVICE_ROLE_KEY` is ever exposed, the only correct response is:
+
+1. **Revoke the key immediately** in Supabase (Project Settings → API → Roll service-role JWT).
+2. Generate a new service-role key.
+3. Update Edge Function secrets with the new value.
+4. Audit `wearable_connections.access_token` rows for any activity that did not come from your own code.
+
+Privileged credentials therefore live in **Supabase Edge Function Secrets only**, accessed at runtime inside the function process. They are never:
+
+- in `.env` on a developer machine (except in `.gitignore`'d local admin tools used to run migrations)
+- in EAS Secrets (EAS-injected values can leak into build artifacts and CI logs)
+- referenced from any file that is bundled into the mobile app
+- written to disk by a server-side process outside Edge Function execution
+
+The mobile client receives only `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` (or Supabase's publishable key, when GA). The mobile client **never** sees the service role, provider OAuth client secrets, or provider access/refresh tokens after the initial OAuth handoff to the Edge Function.

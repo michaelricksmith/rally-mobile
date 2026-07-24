@@ -1,0 +1,8 @@
+node_modules/
+.expo/
+dist/
+
+# env files are not run through Prettier
+**/.env
+**/.env.*
+env.example
