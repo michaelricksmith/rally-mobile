@@ -1,59 +1,120 @@
-import { Text, View, Pressable } from 'react-native';
+/**
+ * Welcome — Rally landing.
+ *
+ * Direction: minimal, social-first. Wordmark + display headline + one
+ * supporting sentence + primary Get Started CTA + three concise benefit
+ * lines. No animated mesh. Background is a flat dark surface with a
+ * single restrained abstract movement graphic in the hero (CSS-only,
+ * no asset).
+ */
+import { View, Text, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-const styles = {
-  root: { flex: 1, backgroundColor: '#0F172A', padding: 24, paddingTop: 64 },
-  brand: { gap: 12 },
-  title: { color: '#F8FAFC', fontSize: 40, fontWeight: '800' as const },
-  tagline: { color: '#CBD5E1', fontSize: 16, lineHeight: 22 },
-  actions: { gap: 12 },
-  buttonBase: {
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center' as const,
-    borderWidth: 1,
-  },
-  buttonPrimary: {
-    backgroundColor: '#22C55E',
-    borderColor: '#22C55E',
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center' as const,
-    borderWidth: 1,
-  },
-  buttonSecondary: {
-    backgroundColor: '#1E293B',
-    borderColor: '#334155',
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center' as const,
-    borderWidth: 1,
-  },
-  buttonPrimaryLabel: { color: '#052E16', fontSize: 16, fontWeight: '700' as const },
-  buttonLabel: { color: '#F8FAFC', fontSize: 16, fontWeight: '600' as const },
-  phase: { color: '#64748B', fontSize: 12, textAlign: 'center' as const, marginTop: 8 },
-};
+import {
+  palette,
+  radius,
+  space,
+  type,
+  DEFAULT_GROUP_ACCENT,
+  accent as resolveAccent,
+} from '@/constants/theme';
+import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
+
+const BENEFITS = [
+  { icon: 'users' as const, text: 'Built for private friend groups' },
+  { icon: 'watch' as const, text: 'Works with your phone or wearable' },
+  { icon: 'shield' as const, text: 'Verified activity, fair competition' },
+];
+
 export default function Welcome() {
+  const a = resolveAccent(DEFAULT_GROUP_ACCENT);
   return (
     <View style={styles.root}>
-      <View style={styles.brand}>
-        <Text style={styles.title}>Rally</Text>
-        <Text style={styles.tagline}>
-          Pickup games, challenges, and bragging rights with the people you actually like.
-        </Text>
+      {/* Hero */}
+      <View style={styles.hero}>
+        <View style={styles.heroAccent} pointerEvents="none" />
+        <View style={styles.wordmarkWrap}>
+          <Text style={styles.wordmark}>Rally</Text>
+          <View style={[styles.dot, { backgroundColor: a }]} />
+        </View>
+        <Text style={styles.headline}>Pickup games that actually happen.</Text>
+        <Text style={styles.subline}>Private groups. Real activity. Friendly competition.</Text>
       </View>
+
+      {/* Benefits */}
+      <View style={styles.benefits}>
+        {BENEFITS.map((b) => (
+          <View key={b.icon} style={styles.benefit}>
+            <View style={styles.benefitIcon}>
+              <Icon name={b.icon} size={20} color={a} />
+            </View>
+            <Text style={styles.benefitText}>{b.text}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* CTAs */}
       <View style={styles.actions}>
         <Link href="/(auth)/signup" asChild>
-          <Pressable style={styles.buttonPrimary}>
-            <Text style={styles.buttonPrimaryLabel}>Get started</Text>
-          </Pressable>
+          <Button
+            label="Get started"
+            size="lg"
+            block
+            groupAccent={DEFAULT_GROUP_ACCENT}
+            leadingIcon={<Icon name="arrow-right" size={18} color={palette.textInverse} />}
+          />
         </Link>
         <Link href="/(auth)/login" asChild>
-          <Pressable style={styles.buttonSecondary}>
-            <Text style={styles.buttonLabel}>I already have an account</Text>
-          </Pressable>
+          <Button label="I already have an account" variant="ghost" size="md" block />
         </Link>
-        <Text style={styles.phase}>Phase 0 placeholder · real auth lands in Phase 1</Text>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: palette.inkDeep,
+    paddingHorizontal: space.xxl,
+    paddingTop: 72,
+    paddingBottom: 32,
+    justifyContent: 'space-between',
+  },
+  hero: { gap: 18 },
+  heroAccent: {
+    position: 'absolute',
+    top: -60,
+    right: -40,
+    width: 220,
+    height: 220,
+    borderRadius: 999 as unknown as number,
+    backgroundColor: DEFAULT_GROUP_ACCENT ? resolveAccent(DEFAULT_GROUP_ACCENT) : '#D7FF3C',
+    opacity: 0.08,
+    transform: [{ rotate: '22deg' }],
+  },
+  wordmarkWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  wordmark: { ...type.display1, color: palette.text, fontSize: 36 },
+  dot: { width: 10, height: 10, borderRadius: 5 },
+  headline: { ...type.display2, color: palette.text, maxWidth: 320 },
+  subline: { ...type.body, color: palette.textMuted, maxWidth: 320 },
+
+  benefits: { gap: space.md },
+  benefit: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  benefitIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: palette.hairline,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  benefitText: { ...type.body, color: palette.text, fontWeight: '500' },
+
+  actions: { gap: space.sm },
+});
