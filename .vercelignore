@@ -1,0 +1,27 @@
+node_modules/
+ios/
+android/
+.expo/
+*.log
+.env
+.env.*
+dist/
+web-build/
+coverage/
+test-results/
+playwright-report/
+
+# Supabase local stack
+supabase/.branches
+supabase/.temp
+
+# Native build outputs from `expo prebuild`
+ios/Pods/
+ios/build/
+android/.gradle/
+android/build/
+android/app/build/
+
+# Editor
+.vscode/
+.idea/

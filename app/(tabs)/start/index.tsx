@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { Link } from 'expo-router';
 
 const ACTIVITIES: { id: string; label: string; emoji: string }[] = [
@@ -20,6 +20,11 @@ export default function Start() {
       <Text style={styles.subtitle}>
         Choose a category. Real session recording lands in Phase 3.
       </Text>
+      {Platform.OS === 'web' ? (
+        <Text style={styles.webNote}>
+          Web preview only · location, motion, and wearable capture are disabled
+        </Text>
+      ) : null}
       <View style={styles.grid}>
         {ACTIVITIES.map((a) => (
           <Link
@@ -42,6 +47,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#0F172A', padding: 20, paddingTop: 64 },
   title: { color: '#F8FAFC', fontSize: 24, fontWeight: '800' },
   subtitle: { color: '#94A3B8', marginTop: 4, marginBottom: 20 },
+  webNote: { color: '#FACC15', fontSize: 12, marginBottom: 12 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   tile: {
     width: '47%',

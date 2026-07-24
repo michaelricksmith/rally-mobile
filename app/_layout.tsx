@@ -1,5 +1,15 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+
+function WebPreviewBanner() {
+  if (Platform.OS !== 'web') return null;
+  return (
+    <View style={styles.banner}>
+      <Text style={styles.bannerText}>Web preview · iOS / Android native features disabled</Text>
+    </View>
+  );
+}
 
 export default function RootLayout() {
   return (
@@ -27,7 +37,22 @@ export default function RootLayout() {
         />
         <Stack.Screen name="profile/privacy" options={{ headerShown: true, title: 'Privacy' }} />
       </Stack>
+      <WebPreviewBanner />
       <StatusBar style="auto" />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  banner: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FACC15',
+    paddingVertical: 4,
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  bannerText: { color: '#1F2937', fontSize: 11, fontWeight: '600' },
+});

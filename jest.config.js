@@ -37,6 +37,6 @@ module.exports = {
     // Stub React Native-only modules so pure-Node tests can run.
     '^expo-secure-store$': '<rootDir>/__mocks__/expo-secure-store.ts',
     '^expo-notifications$': '<rootDir>/__mocks__/expo-notifications.ts',
+    '^react-native$': '<rootDir>/__mocks__/react-native.ts',
   },
-  setupFilesAfterEach: undefined,
 };
