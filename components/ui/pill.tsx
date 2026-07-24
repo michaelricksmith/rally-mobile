@@ -1,32 +1,73 @@
-import { View, Text, StyleSheet } from 'react-native';
+/**
+ * Pill — small status chip. Variants: default, solid, live, verified,
+ * warn, danger. Optionally tinted with a group accent (border + bg tint).
+ */
+import { View, Text, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  palette,
+  radius,
+  type,
+  accent as resolveAccent,
+  type GroupAccent,
+} from '@/constants/theme';
+
+type Variant = 'default' | 'solid' | 'live' | 'verified' | 'warn' | 'danger';
 
 interface Props {
   label: string;
-  tone?: 'neutral' | 'success' | 'warn' | 'danger';
+  variant?: Variant;
+  groupAccent?: GroupAccent;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function Pill({ label, tone = 'neutral' }: Props) {
+const SURFACE: Record<Variant, { borderColor: string; backgroundColor: string }> = {
+  default: { borderColor: palette.hairline, backgroundColor: 'transparent' },
+  solid: { borderColor: 'transparent', backgroundColor: palette.text },
+  live: { borderColor: palette.live + '55', backgroundColor: palette.live + '14' },
+  verified: { borderColor: palette.success, backgroundColor: palette.success + '14' },
+  warn: { borderColor: palette.warn, backgroundColor: palette.warn + '14' },
+  danger: { borderColor: palette.danger, backgroundColor: palette.danger + '14' },
+};
+
+const LABEL_COLOR: Record<Variant, string> = {
+  default: palette.textMuted,
+  solid: palette.textInverse,
+  live: palette.live,
+  verified: palette.success,
+  warn: palette.warn,
+  danger: palette.danger,
+};
+
+export function Pill({ label, variant = 'default', groupAccent, style }: Props) {
+  const accentColor = resolveAccent(groupAccent);
+  // When a groupAccent is provided AND variant is default, use the accent as a
+  // subtle tinted border. Other variants keep their semantic color.
+  const surface =
+    groupAccent && variant === 'default'
+      ? { borderColor: accentColor, backgroundColor: accentColor + '14' }
+      : SURFACE[variant];
+  const labelColor = groupAccent && variant === 'default' ? accentColor : LABEL_COLOR[variant];
   return (
-    <View style={[styles.pill, styles[tone]]}>
-      <Text style={[styles.label, styles[`${tone}Label` as const]]}>{label}</Text>
+    <View style={[styles.base, surface, style]}>
+      {variant === 'live' ? <View style={[styles.dot, { backgroundColor: palette.live }]} /> : null}
+      <Text style={[styles.label, { color: labelColor }]} numberOfLines={1}>
+        {label}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  pill: {
+  base: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
     paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 999,
+    paddingVertical: 3,
+    borderRadius: radius.pill,
     borderWidth: 1,
+    alignSelf: 'flex-start',
   },
-  neutral: { backgroundColor: '#1E293B', borderColor: '#334155' },
-  success: { backgroundColor: '#052E16', borderColor: '#22C55E' },
-  warn: { backgroundColor: '#3F2A05', borderColor: '#FACC15' },
-  danger: { backgroundColor: '#3F0A0A', borderColor: '#EF4444' },
-  label: { fontSize: 12, fontWeight: '600' },
-  neutralLabel: { color: '#CBD5E1' },
-  successLabel: { color: '#86EFAC' },
-  warnLabel: { color: '#FDE68A' },
-  dangerLabel: { color: '#FCA5A5' },
+  label: { ...type.caption, fontWeight: '600' },
+  dot: { width: 6, height: 6, borderRadius: 3 },
 });
