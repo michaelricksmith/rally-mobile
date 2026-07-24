@@ -1,0 +1,74 @@
+{
+  "expo": {
+    "name": "Rally",
+    "slug": "rally-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "rallymobile",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.strive.rallymobile",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Rally uses your approximate location only during an active session you start, and only when you choose to share it with your group.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Optional. Lets Rally keep recording your activity if the screen locks. You can stop sharing at any time.",
+        "NSHealthShareUsageDescription": "Rally reads workouts, heart rate, steps, distance, and active energy from Apple Health only after you connect a device. You can disconnect and delete imported data at any time.",
+        "NSHealthUpdateUsageDescription": "Rally can save completed Rally sessions back to Apple Health if you choose to.",
+        "NSMotionUsageDescription": "Rally uses motion data to estimate steps and movement quality during phone-based sessions.",
+        "UIBackgroundModes": ["location", "fetch", "remote-notification"]
+      }
+    },
+    "android": {
+      "package": "com.strive.rallymobile",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "ACTIVITY_RECOGNITION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_LOCATION",
+        "POST_NOTIFICATIONS",
+        "BODY_SENSORS",
+        "BODY_SENSORS_BACKGROUND"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": false,
+          "data": [
+            { "scheme": "https", "host": "rally.app", "pathPrefix": "/invite" },
+            { "scheme": "https", "host": "rally.app", "pathPrefix": "/join" },
+            { "scheme": "rallymobile" }
+          ]
+        }
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Rally to keep recording if your screen locks. You can stop at any time."
+        }
+      ],
+      ["expo-notifications", { "color": "#0F172A" }],
+      ["expo-dev-client", { "scheme": "rallymobile" }]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
